@@ -14,6 +14,10 @@ import moment from "moment";
 // for the vform package
 import { Form, HasError, AlertError } from "vform";
 
+import Gate from "./Gate";
+// this is how the $gate variable will available in all location
+Vue.prototype.$gate = new Gate(window.user);
+
 // for the vue-progressbar
 import VueProgressBar from "vue-progressbar";
 
@@ -23,6 +27,9 @@ import swal from "sweetalert2";
 window.Form = Form;
 Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
+
+// for the pagination
+Vue.component("pagination", require("laravel-vue-pagination"));
 
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
@@ -123,6 +130,8 @@ Vue.component(
     "example-component",
     require("./components/ExampleComponent.vue").default
 );
+
+Vue.component("not-found", require("./components/NotFound.vue").default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

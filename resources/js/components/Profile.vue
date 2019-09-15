@@ -9,7 +9,7 @@
             <h5 class="widget-user-desc">Founder &amp; CEO</h5>
           </div>
           <div class="widget-user-image">
-            <img class="img-circle elevation-2" src="/img/user.png" alt="User Avatar" />
+            <img class="img-circle elevation-2" :src="getProfilePhoto()" alt="User Avatar" />
           </div>
           <div class="card-footer">
             <div class="row">
@@ -109,7 +109,7 @@
 
                     <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group" v-if="$gate.isAdmin()">
                     <label for="type" class="control-label">Position</label>
 
                     <select name="type" v-model="form.type" id="type" class="form-control">
@@ -185,6 +185,20 @@ export default {
     console.log("Profile Component mounted.");
   },
   methods: {
+    getProfilePhoto() {
+      //default avatar pic if there is no photo of user
+      let photo = "img/user.png";
+      //returns the current path of the
+      if (this.form.photo) {
+        // indexOf returns -1 if not matches
+        if (this.form.photo.indexOf("base64") != -1) {
+          photo = this.form.photo;
+        } else {
+          photo = "img/profile/" + this.form.photo;
+        }
+      }
+      return photo;
+    },
     updateInfo() {
       // start the progress bar
       this.$Progress.start();

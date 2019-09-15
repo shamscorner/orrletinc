@@ -26,7 +26,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::latest()->paginate(10);
+        // limit the access
+        //$this->authorize('isAdmin');
+
+        if (\Gate::allows('isAdmin') || \Gate::allows('isManager')) {
+            // The current user can edit settings
+            return User::latest()->paginate(10);
+        }
     }
 
     /**
@@ -37,6 +43,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // limit the access
+        $this->authorize('isAdmin');
+        
         $this->validate($request, [
             'name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users',
@@ -126,17 +135,22 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        // limit the access
+        //$this->authorize('isAdmin');
 
-        $this->validate($request, [
-            'name' => 'required|string|max:191',
-            'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
-            'password' => 'sometimes|min:6'
-        ]);
+        if (\Gate::allows('isAdmin') || \Gate::allows('isManager')) {
+            $user = User::findOrFail($id);
 
-        $user->update($request->all());
+            $this->validate($request, [
+                'name' => 'required|string|max:191',
+                'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
+                'password' => 'sometimes|min:6'
+            ]);
 
-        return ['message' => 'Updated Successfully'];
+            $user->update($request->all());
+
+            return ['message' => 'Updated Successfully'];
+        }
     }
 
     /**
@@ -147,6 +161,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+
+        // limit the access
+        $this->authorize('isAdmin');
+
         $user = User::findOrFail($id);
         
         // delete the user
