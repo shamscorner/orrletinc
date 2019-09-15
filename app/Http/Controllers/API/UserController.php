@@ -172,4 +172,26 @@ class UserController extends Controller
 
         return ['message' => 'User has been deleted'];
     }
+
+    /**
+    * Author: shamscorner
+    * DateTime: 16/September/2019 - 03:04:36
+    *
+    * search data from the user
+    *
+    */
+    public function search()
+    {
+        if ($search = \Request::get('query')) {
+            $users = User::where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%")
+                ->orWhere('email', 'LIKE', "%$search%")
+                ->orWhere('id', 'LIKE', "%$search%")
+                ->orWhere('type', 'LIKE', "%$search%");
+            })->paginate(10);
+        } else {
+            $users = User::latest()->paginate(10);
+        }
+        return $users;
+    }
 }

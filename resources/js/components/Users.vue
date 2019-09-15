@@ -279,6 +279,16 @@ export default {
     Fire.$on("after-create", () => {
       this.loadUsers();
     });
+    Fire.$on("searching", () => {
+      let query = this.$parent.search;
+      axios
+        .get("api/findUser?query=" + query)
+        .then(data => {
+          this.users = data.data;
+          //console.log(data);
+        })
+        .catch(() => {});
+    });
   }
 };
 </script>

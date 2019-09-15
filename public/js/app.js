@@ -2791,6 +2791,12 @@ __webpack_require__.r(__webpack_exports__);
     Fire.$on("after-create", function () {
       _this6.loadUsers();
     });
+    Fire.$on("searching", function () {
+      var query = _this6.$parent.search;
+      axios.get("api/findUser?query=" + query).then(function (data) {
+        _this6.users = data.data; //console.log(data);
+      })["catch"](function () {});
+    });
   }
 });
 
@@ -63238,7 +63244,15 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12 mt-3" }, [
         _c("div", { staticClass: "card card-widget widget-user" }, [
-          _vm._m(0),
+          _c("div", { staticClass: "widget-user-header bg-info" }, [
+            _c("h3", { staticClass: "widget-user-username" }, [
+              _vm._v(_vm._s(_vm._f("capitalize")(_vm.form.name)))
+            ]),
+            _vm._v(" "),
+            _c("h5", { staticClass: "widget-user-desc" }, [
+              _vm._v(_vm._s(_vm._f("capitalize")(_vm.form.type)))
+            ])
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "widget-user-image" }, [
             _c("img", {
@@ -63247,7 +63261,7 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._m(1)
+          _vm._m(0)
         ])
       ])
     ]),
@@ -63255,11 +63269,11 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card" }, [
-          _vm._m(2),
+          _vm._m(1),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "tab-content" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c(
                 "div",
@@ -63406,7 +63420,7 @@ var render = function() {
                       1
                     ),
                     _vm._v(" "),
-                    _vm._m(4),
+                    _vm._m(3),
                     _vm._v(" "),
                     _vm.$gate.isAdmin()
                       ? _c(
@@ -63483,7 +63497,7 @@ var render = function() {
                         )
                       : _vm._e(),
                     _vm._v(" "),
-                    _vm._m(5),
+                    _vm._m(4),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group" }, [
                       _c(
@@ -63587,18 +63601,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "widget-user-header bg-info" }, [
-      _c("h3", { staticClass: "widget-user-username" }, [
-        _vm._v("Alexander Pierce")
-      ]),
-      _vm._v(" "),
-      _c("h5", { staticClass: "widget-user-desc" }, [_vm._v("Founder & CEO")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -80476,6 +80478,9 @@ var routes = [{
   path: "/dashboard",
   component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
 }, {
+  path: "/home",
+  component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
+}, {
   path: "/profile",
   component: __webpack_require__(/*! ./components/Profile.vue */ "./resources/js/components/Profile.vue")["default"]
 }, {
@@ -80484,6 +80489,9 @@ var routes = [{
 }, {
   path: "/developer",
   component: __webpack_require__(/*! ./components/Developer.vue */ "./resources/js/components/Developer.vue")["default"]
+}, {
+  path: "*",
+  component: __webpack_require__(/*! ./components/NotFound.vue */ "./resources/js/components/NotFound.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
   mode: "history",
@@ -80549,7 +80557,16 @@ Vue.component("not-found", __webpack_require__(/*! ./components/NotFound.vue */ 
 
 var app = new Vue({
   el: "#app",
-  router: router
+  router: router,
+  data: {
+    search: ""
+  },
+  methods: {
+    // wait for 2 seconds and then fire an event
+    searchText: _.debounce(function () {
+      Fire.$emit("searching");
+    }, 1000)
+  }
 });
 
 /***/ }),

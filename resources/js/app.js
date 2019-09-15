@@ -40,6 +40,10 @@ let routes = [
         component: require("./components/Dashboard.vue").default
     },
     {
+        path: "/home",
+        component: require("./components/Dashboard.vue").default
+    },
+    {
         path: "/profile",
         component: require("./components/Profile.vue").default
     },
@@ -50,6 +54,10 @@ let routes = [
     {
         path: "/developer",
         component: require("./components/Developer.vue").default
+    },
+    {
+        path: "*",
+        component: require("./components/NotFound.vue").default
     }
 ];
 
@@ -59,7 +67,7 @@ const router = new VueRouter({
 });
 
 // capitalize the text
-Vue.filter("capitalize", function(text) {
+Vue.filter("capitalize", text => {
     if (!text) return "";
     text = text.toString();
     return text.charAt(0).toUpperCase() + text.slice(1);
@@ -141,5 +149,14 @@ Vue.component("not-found", require("./components/NotFound.vue").default);
 
 const app = new Vue({
     el: "#app",
-    router
+    router,
+    data: {
+        search: ""
+    },
+    methods: {
+        // wait for 2 seconds and then fire an event
+        searchText: _.debounce(() => {
+            Fire.$emit("searching");
+        }, 1000)
+    }
 });
